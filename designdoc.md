@@ -5,13 +5,19 @@ and in case you're wondering, there's lots of ways to convert markdown to pdf ea
 Brennan McFarland and Joshua Reichman
 
 ### Overview
-Our project consists of a program to monitor and manage the concurrent execution of other programs via command line.  The idea is that the user can queue up bash commands as "jobs" and the manager will then schedule CPU time to run them concurrently or with the appearance of concurrency if there is only one CPU core.  Preference will be given to processes that are queued first, and the user can also assign priority to certain jobs.  The processes will be scheduled in a manner similar to the popular telescope scheduling algorithm.  Additionally, the user can type a command to display the list of jobs and their status in a manner similar to the "top" command and stop running jobs as with "kill".  In a nutshell, the manager function similarly to queuing and viewing the status of batch processes on the HPC cluster.
+Our project consists of a program to monitor and manage the concurrent execution of other programs via command line.  The idea is that the user can queue up bash commands in an interactive terminal as "jobs" and the manager will then schedule CPU time to run them concurrently or with the appearance of concurrency if there is only one CPU core.  Preference will be given to processes that are queued first, and the user can also assign priority to certain jobs.  The processes will be scheduled in a manner similar to the popular telescope scheduling algorithm.  Additionally, the user can type a command to display the list of jobs and their status in a manner similar to the "top" command and stop running jobs as with "kill".  In a nutshell, the manager function similarly to queuing and viewing the status of batch processes on the HPC cluster.
 
 ### Files
-this could be a bad idea, but it might be easier if we just add this as we make new files
+TODO: add to/change this as we go<br>
+* __jobsmanager__ &emsp; - &emsp; a bash script to start the application
+* __jm.py__ &emsp; - &emsp; runs the jobs manager application; python execution starts here
+* __jmshell.py__ &emsp; - &emsp; contains the shell specification (a class inheriting from the cmd.Cmd class in the python standard library) that binds commands to program functions
+* __jmmanager.py__ &emsp; - &emsp; handles the jobs themselves, keeping track of them and handling the calls bound by jmshell to create, kill and list new jobs TODO: may need to split this up
+* __jmjob.py__ &emsp; - &emsp; a job and relevant information pertaining to id (ID, PID, etc)
+
 
 ### Data Structures
-""
+TODO: this section
 ### Usage and Sample Output
 * __runjob *bash command*__ &emsp; - &emsp; add a job to the queue
 ><p>
