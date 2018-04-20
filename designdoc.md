@@ -30,10 +30,10 @@ TODO: this section
 \>runjob echo "hello!"<br>
 hello!
 </p>
-* __runjob -p *priority* *bash command*__ &emsp; - &emsp; adds a job to the queue with the specified priority (an integer), with 1 being the highest priority
+* __runjob *priority* *bash command*__ &emsp; - &emsp; adds a job to the queue with the specified priority (an integer), with 1 being the highest priority
 <p>
 <br>
-\>runjob -p 1 echo "hello!"<br>
+\>runjob 1 echo "hello!"<br>
 hello!
 </p>
 * __lsjobs__ &emsp; - &emsp; display the list of jobs and their statuses and IDs (specific to the jobs manager, not the same as PIDs)
