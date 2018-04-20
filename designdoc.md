@@ -5,4 +5,33 @@ and in case you're wondering, there's lots of ways to convert markdown to pdf ea
 Brennan McFarland and Joshua Reichman
 
 ### Overview
-Our project consists of a program to monitor and manage the concurrent execution of other programs via command line.  The idea is that the user can queue up bash commands as "jobs" and the manager will then schedule CPU time to run them concurrently or with the appearance of concurrency if there is only one CPU core.  Preference will be given to processes that are queued first, and the user can also assign priority to certain jobs.  The processes will be scheduled in a manner similar to the popular telescope scheduling algorithm.  Additionally, the user can type a command to display the list of jobs and their status in a manner similar to the "top" command.  In a nutshell, the manager function similarly to queuing and viewing the status of batch processes on the HPC cluster.
+Our project consists of a program to monitor and manage the concurrent execution of other programs via command line.  The idea is that the user can queue up bash commands as "jobs" and the manager will then schedule CPU time to run them concurrently or with the appearance of concurrency if there is only one CPU core.  Preference will be given to processes that are queued first, and the user can also assign priority to certain jobs.  The processes will be scheduled in a manner similar to the popular telescope scheduling algorithm.  Additionally, the user can type a command to display the list of jobs and their status in a manner similar to the "top" command and stop running jobs as with "kill".  In a nutshell, the manager function similarly to queuing and viewing the status of batch processes on the HPC cluster.
+
+### Files
+this could be a bad idea, but it might be easier if we just add this as we make new files
+
+### Data Structures
+""
+### Usage and Sample Output
+* __runjob *bash command*__ &emsp; - &emsp; add a job to the queue
+><p>
+\>runjob echo "hello!"<br>
+hello!
+</p>
+* __runjob -p *priority* *bash command*__ &emsp; - &emsp; adds a job to the queue with the specified priority (an integer), with 1 being the highest priority
+><p>
+\>runjob -p 1 echo "hello!"<br>
+hello!
+</p>
+* __lsjobs__ &emsp; - &emsp; display the list of jobs and their statuses and IDs (specific to the jobs manager, not the same as PIDs)
+TODO: update the example below
+><p>
+\>lsjobs<br>
+ID  &emsp; &emsp; PID &emsp; &emsp; STAT &emsp; &emsp; NAME &emsp; &emsp; TIME &emsp; &emsp; %CPU<br>
+0001 &emsp;27129 &emsp; &emsp; R &emsp; &emsp; &emsp; sleep.c &emsp;&emsp;0:00:10 &emsp; &emsp; &emsp; 0
+</p>
+* __killjob *job*__ &emsp; - &emsp; cancel the specified job, which can be either the job's ID or name, with undefined behavior for which job of the same name is killed in the case of multiple of the same jobs
+><p>
+\>killjob 0001<br>
+killing job 0001: sleep.c
+</p>
