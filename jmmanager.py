@@ -1,4 +1,5 @@
 from jmjob import JMJob
+import bintrees
 
 
 jobs = []
