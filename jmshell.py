@@ -8,13 +8,17 @@ class ShellLoop(cmd.Cmd):
 
     prompt = "jm> "
 
+    def precmd(self, line):
+        manager.manage_jobs()
+        return line
 
     def do_runjob(self, command, priority = 100):
         parsed_command = command.split()
         manager.add_job(command, parsed_command, priority)
 
-    def do_lsjobs(self):
-        print("TODO: jobs will be listed here")
+    def do_lsjobs(self, line):
+        print("ID   PID     NICE STAT NAME TIME %CPU")
+        print("0001 27129   03  R   ./test.c  0:00:10 50")
 
     def do_killjob(self, job_identifier):
         'job_identifier can be either ID or name'
