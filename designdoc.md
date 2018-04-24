@@ -5,7 +5,7 @@ and in case you're wondering, there's lots of ways to convert markdown to pdf ea
 Brennan McFarland and Joshua Reichman
 
 ### Overview
-Our project consists of a program to monitor and manage the concurrent execution of other programs via command line.  The idea is that the user can queue up bash commands in an interactive terminal as "jobs" and the manager will then schedule CPU time to run them concurrently or with the appearance of concurrency if there is only one CPU core.  Preference will be given to processes that are queued first, and the user can also assign priority to certain jobs.  The processes will be scheduled in a manner similar to the popular telescope scheduling algorithm.  Additionally, the user can type a command to display the list of jobs and their status in a manner similar to the "top" command and stop running jobs as with "kill".  In a nutshell, the manager function similarly to queuing and viewing the status of batch processes on the HPC cluster.
+Our project consists of a program to monitor and manage the concurrent execution of other programs via command line.  The idea is that the user can queue up bash commands in an interactive terminal as "jobs" and the manager will then schedule CPU time to run them concurrently or with the appearance of concurrency if there is only one CPU core.  Preference will be given to processes that are queued first, and the user can also assign priority to certain jobs.  The processes will be scheduled in a manner similar to the popular telescope scheduling algorithm or Linux's Completely Fair Scheduler.  The ultimate CPU time of jobs will be determined by their nice value.  Additionally, the user can type a command to display the list of jobs and their status in a manner similar to the "top" command and stop running jobs as with "kill".  In a nutshell, the manager function similarly to queuing and viewing the status of batch processes on the HPC cluster.
 
 ### Files
 TODO: add to/change this as we go
@@ -22,7 +22,7 @@ TODO: add to/change this as we go
 <br>
 
 ### Data Structures
-TODO: this section
+The only major use of data structures other than the main classes for the aforementioned files reside in jmmanager.py.  It contains a SortedListWithKey from the SortedContainers Python Library, queuing jobs by their nice value.  It also contains a list of running jobs, and a lock semaphore for both these datastructures to ensure safe concurrent access.
 ### Usage and Sample Output
 * __runjob *bash command*__ &emsp; - &emsp; add a job to the queue
 <p>
