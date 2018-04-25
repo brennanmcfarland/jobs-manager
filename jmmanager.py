@@ -24,6 +24,14 @@ def add_job(command, parsed_command, priority):
     print("added job ", parsed_command)
 
 
+def readd_job(job):
+    job.nice -= 1
+    queueLock.acquire()
+    queuedjobs.add(job)
+    queueLock.release()
+    print("re-added job ", job.parsed_command)
+
+
 def start_next_job():
     queueLock.acquire()
     try:
@@ -53,8 +61,12 @@ class JMManager(threading.Thread):
         for j in range(len(runningjobs)):
             #print(runningjobs[j])
             if runningjobs[j] is None or runningjobs[j].nice == 0:
-                start_next_job()
+                next_job = start_next_job()
+                if next_job is not None:
+                    # add removed jobs back on to the queue with a lower nice value
+                    if runningjobs[j] is not None:
+                        readd_job(runningjobs[j])
+                    runningjobs[j] = next_job
             else:
                 if runningjobs[j] is not None:
                     runningjobs[j].nice -= 1
-    #     # TODO: add removed jobs back onto the queue with new nice value
