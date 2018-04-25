@@ -25,12 +25,14 @@ def add_job(command, parsed_command, priority):
 
 
 def start_next_job():
+    queueLock.acquire()
     try:
-        queueLock.acquire()
+        #print("waiting for lock... ")
         next_job = queuedjobs.pop()
-        queueLock.release()
-    except: return None
-    next_job.start()
+        next_job.start()
+        print("started job ", next_job.id)
+    except: next_job = None
+    finally: queueLock.release()
     return next_job
 
 
@@ -51,15 +53,7 @@ class JMManager(threading.Thread):
         for j in range(len(runningjobs)):
             #print(runningjobs[j])
             if runningjobs[j] is None or runningjobs[j].nice == 0:
-                try:
-                    queueLock.acquire()
-                    runningjobs[j] = queuedjobs.pop()
-                    queueLock.release()
-                    runningjobs[j].start()
-                except:
-                    runningjobs[j] = None
-                if runningjobs[j] is not None:
-                    print(runningjobs[j])
+                start_next_job()
             else:
                 if runningjobs[j] is not None:
                     runningjobs[j].nice -= 1
