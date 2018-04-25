@@ -7,15 +7,9 @@ class ShellLoop(cmd.Cmd):
     do_<command name> to work.  Arguments are parsed automatically."""
 
     prompt = "jm> "
-    jmanager = None
-
-    def __init__(self, jmanager):
-        self.jmanager = jmanager
-        super().__init__()
 
     def do_runjob(self, command, priority = 100):
         parsed_command = command.split()
-        #self.jmanager.add_job(command, parsed_command, priority)
         jmmanager.add_job(command, parsed_command, priority)
         print("adding job ", parsed_command)
 

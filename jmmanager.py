@@ -1,9 +1,7 @@
 from jmjob import JMJob
 from sortedcontainers import SortedListWithKey
 import psutil as ps
-#from asyncio.locks import Lock
 import time
-import sys
 import threading
 
 
