@@ -1,4 +1,5 @@
 import subprocess as sp
+import datetime
 
 ERROR_VAL = -1
 
@@ -12,6 +13,7 @@ class JMJob:
     parsed_command = []
     subprocess = None
     nice = ERROR_VAL
+    start_time = 0
 
     def __init__(self, id, command, parsed_command, priority):
         print(command)
@@ -19,6 +21,7 @@ class JMJob:
         self.parsed_command = parsed_command
         self.priority = priority
         self.id = id
+        self.start_time = datetime.datetime.now()
         #self.nice = nice
 
     def start(self):
