@@ -69,6 +69,17 @@ def start_next_job():
     finally: queueLock.release()
     return next_job
 
+def kill_job(job):
+    runningLock.acquire()
+    runningjob = job.id
+    for j in range(len(runningjobs)):
+        if runningjobs[j].id == runningjob.id:
+            runningjobs[j].kill()
+            print("killed job ", runningjob.id)
+            runningLock.release()
+    print(job, " is not a running job")
+    runningLock.release()
+    return None
 
 class JMManager(threading.Thread):
 

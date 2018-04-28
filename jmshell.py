@@ -18,7 +18,8 @@ class ShellLoop(cmd.Cmd):
 
     def do_killjob(self, job_identifier):
         'job_identifier can be either ID or name'
-        print("TODO: kill job ", job_identifier)
+        jmmanager.kill_job(job_identifier)
+        print("killing job ", job_identifier)
 
     def emptyline(self):
         pass
