@@ -23,6 +23,7 @@ def add_job(command, parsed_command, priority):
     queueLock.release()
     newid += 1
     print("added job ", parsed_command)
+    #list_jobs()
 
 
 def list_jobs():
@@ -40,6 +41,7 @@ def list_jobs():
     # so it's probably not getting added or re-added to the queue/running job slist properly
     for job in runningjobs:
         list_job(job, "R")
+    print(runningjobs)
     runningLock.release()
     print("jobs listed")
     sys.stdout.flush()
@@ -86,15 +88,26 @@ class JMManager(threading.Thread):
         time.sleep(quantum)
         runningLock.acquire()
         for j in range(len(runningjobs)):
-            #print(runningjobs[j])
-            if runningjobs[j] is None or runningjobs[j].nice == 0:
-                next_job = start_next_job()
-                if next_job is not None:
-                    # add removed jobs back on to the queue with a lower nice value
-                    if runningjobs[j] is not None:
-                        readd_job(runningjobs[j])
-                    runningjobs[j] = next_job
-            else:
-                if runningjobs[j] is not None:
-                    runningjobs[j].nice -= 1
+            self.manage_job(j)
+
         runningLock.release()
+
+    def manage_job(self, j):
+        # remove jobs completely if they're finished
+        if runningjobs[j] is not None and runningjobs[j].subprocess.poll() is not None:
+            runningjobs[j] = None
+            print("finished job")
+        # add jobs back to the queue if their CPU time has expired
+        if runningjobs[j] is not None and runningjobs[j].nice == 0:
+            readd_job(runningjobs[j])
+            runningjobs[j] = None
+            print("job time expired, re-queueing")
+        if runningjobs[j] is None:
+            next_job = start_next_job()
+            if next_job is None: return
+            print("about to add job", runningjobs)
+            sys.stdout.flush()
+            runningjobs[j] = next_job
+            print("added job", runningjobs)
+        else:
+            runningjobs[j].nice -= 1
