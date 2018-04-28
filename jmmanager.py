@@ -4,6 +4,7 @@ import psutil as ps
 import time
 import threading
 import sys
+import datetime
 
 
 cores = ps.cpu_count()
@@ -47,7 +48,7 @@ def list_jobs():
 
 def list_job(job, status):
     if job is not None:
-        print(job.id, " ", job.pid, " ", status, " ", job.command, " ", "[time]")
+        print(job.id, " ", job.pid, " ", status, " ", job.command, " ", datetime.datetime.now()-job.start_time)
 
 
 def readd_job(job):
