@@ -14,8 +14,7 @@ class ShellLoop(cmd.Cmd):
         print("adding job ", parsed_command)
 
     def do_lsjobs(self, line):
-        print("ID   PID     NICE STAT NAME TIME %CPU")
-        print("0001 27129   03  R   ./test.c  0:00:10 50")
+        jmmanager.list_jobs()
 
     def do_killjob(self, job_identifier):
         'job_identifier can be either ID or name'

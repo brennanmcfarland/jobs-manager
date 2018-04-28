@@ -3,6 +3,7 @@ from sortedcontainers import SortedListWithKey
 import psutil as ps
 import time
 import threading
+import sys
 
 
 cores = ps.cpu_count()
@@ -22,6 +23,31 @@ def add_job(command, parsed_command, priority):
     queueLock.release()
     newid += 1
     print("added job ", parsed_command)
+
+
+def list_jobs():
+    print("CPU core usage: ", *[str(percent)+"%" for percent in ps.cpu_percent(.2, True)], sep='\n')
+    print("ID   PID     STAT    NAME    TIME")
+    queueLock.acquire()
+    for job in queuedjobs:
+        list_job(job, "Q")
+    queueLock.release()
+    print("printed queued jobs")
+    runningLock.acquire()
+    print("aquired running lock")
+    sys.stdout.flush()
+    # TODO: it's not printing the running job, but it's still completing if given the time,
+    # so it's probably not getting added or re-added to the queue/running job slist properly
+    for job in runningjobs:
+        list_job(job, "R")
+    runningLock.release()
+    print("jobs listed")
+    sys.stdout.flush()
+
+
+def list_job(job, status):
+    if job is not None:
+        print(job.id, " ", job.pid, " ", status, " ", job.command, " ", "[time]")
 
 
 def readd_job(job):
@@ -58,6 +84,7 @@ class JMManager(threading.Thread):
     def manage_jobs(self, quantum=.5):
         #print("[output of job, list of files for ls]")
         time.sleep(quantum)
+        runningLock.acquire()
         for j in range(len(runningjobs)):
             #print(runningjobs[j])
             if runningjobs[j] is None or runningjobs[j].nice == 0:
@@ -70,3 +97,4 @@ class JMManager(threading.Thread):
             else:
                 if runningjobs[j] is not None:
                     runningjobs[j].nice -= 1
+        runningLock.release()
