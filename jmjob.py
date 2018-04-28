@@ -9,19 +9,20 @@ class JMJob:
     id = ERROR_VAL
     pid = ERROR_VAL
     command = ""
+    parsed_command = []
     subprocess = None
     nice = ERROR_VAL
 
     def __init__(self, id, command, parsed_command, priority):
         print(command)
         self.command = command
+        self.parsed_command = parsed_command
         self.priority = priority
         self.id = id
         #self.nice = nice
-        self.start(parsed_command)
 
-    def start(self, parsed_command):
-        self.subprocess = sp.Popen(parsed_command)  # creates a new process
+    def start(self):
+        self.subprocess = sp.Popen(self.parsed_command)  # creates a new process
         self.pid = self.subprocess.pid
         self.status()
 

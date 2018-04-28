@@ -17,33 +17,31 @@ newid = 0
 def add_job(command, parsed_command, priority):
     global newid
     newjob = JMJob(newid, command, parsed_command, priority)
-    print("waiting for lock...")
+    #print("waiting for lock...")
     queueLock.acquire()
     queuedjobs.add(newjob)
     queueLock.release()
     newid += 1
     print("added job ", parsed_command)
-    #list_jobs()
 
 
 def list_jobs():
     print("CPU core usage: ", *[str(percent)+"%" for percent in ps.cpu_percent(.2, True)], sep='\n')
-    print("ID   PID     STAT    NAME    TIME")
+    print("ID   PID  STAT    NAME                  TIME")
     queueLock.acquire()
     for job in queuedjobs:
         list_job(job, "Q")
+    #print(queuedjobs)
     queueLock.release()
-    print("printed queued jobs")
+    #print("printed queued jobs")
     runningLock.acquire()
-    print("aquired running lock")
+    #print("aquired running lock")
     sys.stdout.flush()
-    # TODO: it's not printing the running job, but it's still completing if given the time,
-    # so it's probably not getting added or re-added to the queue/running job slist properly
     for job in runningjobs:
         list_job(job, "R")
-    print(runningjobs)
+    #print(runningjobs)
     runningLock.release()
-    print("jobs listed")
+    print("------------")
     sys.stdout.flush()
 
 
@@ -63,11 +61,12 @@ def readd_job(job):
 def start_next_job():
     queueLock.acquire()
     try:
-        #print("waiting for lock... ")
+        #print("start_next_job waiting for lock... ")
         next_job = queuedjobs.pop()
         next_job.start()
         print("started job ", next_job.id)
-    except: next_job = None
+    except IndexError:
+        next_job = None
     finally: queueLock.release()
     return next_job
 
@@ -82,6 +81,12 @@ def kill_job(job):
     print(job, " is not a running job")
     runningLock.release()
     return None
+
+
+# prints messages from threads
+def tprint(msg):
+    print(msg)
+
 
 class JMManager(threading.Thread):
 
@@ -107,18 +112,15 @@ class JMManager(threading.Thread):
         # remove jobs completely if they're finished
         if runningjobs[j] is not None and runningjobs[j].subprocess.poll() is not None:
             runningjobs[j] = None
-            print("finished job")
         # add jobs back to the queue if their CPU time has expired
         if runningjobs[j] is not None and runningjobs[j].nice == 0:
             readd_job(runningjobs[j])
             runningjobs[j] = None
-            print("job time expired, re-queueing")
         if runningjobs[j] is None:
             next_job = start_next_job()
             if next_job is None: return
-            print("about to add job", runningjobs)
             sys.stdout.flush()
             runningjobs[j] = next_job
-            print("added job", runningjobs)
         else:
+            #tprint(runningjobs[j])
             runningjobs[j].nice -= 1
