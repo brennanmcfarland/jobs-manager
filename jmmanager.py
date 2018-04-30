@@ -71,17 +71,36 @@ def start_next_job():
     finally: queueLock.release()
     return next_job
 
-def kill_job(job):
+
+# job can be either name or id
+def kill_job(job_identifier):
     runningLock.acquire()
-    runningjob = job.id
-    for j in range(len(runningjobs)):
-        if runningjobs[j].id == runningjob.id:
-            runningjobs[j].kill()
-            print("killed job ", runningjob.id)
-            runningLock.release()
-    print(job, " is not a running job")
+    if kill_running_job(job_identifier) is None and kill_queued_job(job_identifier) is None:
+        print(job_identifier, " is not a running job")
+    else:
+        print("killed job ", job_identifier)
     runningLock.release()
-    return None
+    return
+
+
+# NOTE: in critical section for runningjobs
+def kill_running_job(job_identifier):
+    for j in range(len(runningjobs)):
+        if runningjobs[j] is not None:
+            if str(runningjobs[j].id) == job_identifier or job_identifier == runningjobs[j].command:
+                runningjobs[j].kill()
+                runningjobs[j] = None
+                return job_identifier
+
+
+# NOTE: in critical section for queuedjobs
+def kill_queued_job(job_identifier):
+    for j in range(len(queuedjobs)):
+        if queuedjobs[j] is not None:
+            if str(queuedjobs[j].id) == job_identifier or job_identifier == queuedjobs[j].command:
+                queuedjobs[j].kill()
+                del queuedjobs[j]
+                return job_identifier
 
 
 # prints messages from threads
