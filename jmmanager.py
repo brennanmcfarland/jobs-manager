@@ -18,7 +18,6 @@ newid = 0
 def add_job(command, parsed_command, priority):
     global newid
     newjob = JMJob(newid, command, parsed_command, priority)
-    #print("waiting for lock...")
     queueLock.acquire()
     queuedjobs.add(newjob)
     queueLock.release()
@@ -26,21 +25,19 @@ def add_job(command, parsed_command, priority):
     print("added job ", parsed_command)
 
 
+# NOTE: python doesn't really give us a good way to display the CPU time of processes, so we just
+# show the overall load of each core instead
 def list_jobs():
     print("CPU core usage: ", *[str(percent)+"%" for percent in ps.cpu_percent(.2, True)], sep='\n')
     print("ID   PID  STAT    NAME                  TIME")
     queueLock.acquire()
     for job in queuedjobs:
         list_job(job, "Q")
-    #print(queuedjobs)
     queueLock.release()
-    #print("printed queued jobs")
     runningLock.acquire()
-    #print("aquired running lock")
     sys.stdout.flush()
     for job in runningjobs:
         list_job(job, "R")
-    #print(runningjobs)
     runningLock.release()
     print("------------")
     sys.stdout.flush()
@@ -103,11 +100,6 @@ def kill_queued_job(job_identifier):
                 return job_identifier
 
 
-# prints messages from threads
-def tprint(msg):
-    print(msg)
-
-
 class JMManager(threading.Thread):
 
     # thread methods
@@ -120,7 +112,6 @@ class JMManager(threading.Thread):
 
     # called every time quantum
     def manage_jobs(self, quantum=.5):
-        #print("[output of job, list of files for ls]")
         time.sleep(quantum)
         runningLock.acquire()
         for j in range(len(runningjobs)):
@@ -142,5 +133,4 @@ class JMManager(threading.Thread):
             sys.stdout.flush()
             runningjobs[j] = next_job
         else:
-            #tprint(runningjobs[j])
             runningjobs[j].nice -= 1
