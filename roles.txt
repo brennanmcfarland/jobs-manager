@@ -1,5 +1,6 @@
 Brennan McFarland:
 Wrote JobsManager and the shell functionality.
+Implemented functionality for adding, listing and killing jobs.
 
 Josh Reichman:
 Implemented the jobs class and nice value functionality.
