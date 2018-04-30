@@ -3,4 +3,5 @@ Wrote JobsManager and the shell functionality.
 Implemented functionality for adding, listing and killing jobs.
 
 Josh Reichman:
-Implemented the jobs class and nice value functionality.
+Wrote the jobs class.
+Implemented priority and nice value functionality, parsing input from user.
