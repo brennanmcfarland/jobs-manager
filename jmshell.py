@@ -14,7 +14,8 @@ class ShellLoop(cmd.Cmd):
         if parsed_command[0].isdigit():
             priority = parsed_command[0]
             parsed_command.pop(0)
-        jmmanager.add_job(command, parsed_command, priority) #TODO: remove priority number from command if one is entered
+            command = " ".join(parsed_command)
+        jmmanager.add_job(command, parsed_command, priority)
         print("adding job ", parsed_command)
 
     def do_lsjobs(self, line):

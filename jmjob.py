@@ -12,7 +12,7 @@ class JMJob:
     command = ""
     parsed_command = []
     subprocess = None
-    nice = ERROR_VAL
+    nice = 100
     start_time = 0
 
     def __init__(self, id, command, parsed_command, priority):
@@ -22,7 +22,7 @@ class JMJob:
         self.priority = priority
         self.id = id
         self.start_time = datetime.datetime.now()
-        #self.nice = nice
+        self.nice = self.fix_nice(priority)
 
     def start(self):
         self.subprocess = sp.Popen(self.parsed_command)  # creates a new process
@@ -36,8 +36,14 @@ class JMJob:
     def is_terminated(self):
         return not self.subprocess.poll()
 
-    def calculate_nice(self):
-        return self.nice # TODO: Calculate nice value rather than simply return it
+    @staticmethod
+    def fix_nice(niceinput):
+        if int(niceinput) > 100:
+            return 100
+        elif int(niceinput) < 0:
+            return 0
+        else:
+            return int(niceinput)
 
     def kill(self):
         self.subprocess.kill()
